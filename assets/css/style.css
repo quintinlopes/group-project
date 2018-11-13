@@ -233,6 +233,30 @@ body.decrypt #step2{
 	color: #555;
 }
 
+/* image class hide for canvas
+*/
+
+.hide {
+    display: none;
+}
+
+
+#step3 textarea{
+	background-color: #fff;
+	border: none;
+	padding: 8px 18px;
+	line-height: 1;
+	font: inherit;
+	display: inline-block;
+	outline: none;
+	width: 400px;
+	margin-bottom: 18px;
+	border-radius: 2px;
+	box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
+	font-size: 36px;
+	color: #555;
+}
+
 #step4{
 	background-image: url("../../../group-project/assets/img/ep_naturalblack.png");
 }

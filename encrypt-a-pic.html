@@ -25,8 +25,8 @@
 
 					<button class="btn btn-outline-dark" id="logoutBtn" onclick="mainApp.logout();">Logout</button>
 					<h1>What do you want to do?</h1>
-					<a class="button encrypt green">Encrypt a file</a>
-					<a class="button decrypt blue">Decrypt a file</a>
+					<a class="button encrypt green">Encrypt a pic</a>
+					<a class="button decrypt blue">Decrypt a pic</a>
 				</div>
 			</div>
 
@@ -55,7 +55,10 @@
 				<div class="content if-encrypt">
 					<h1>Enter a pass phrase</h1>
 					<h2>This phrase will be used as an encryption key. Write it down or remember it; you won't be able to restore the file without it. </h2>
-					
+
+                    <textarea id='message' maxlength='1000'
+                    placeholder='Type hidden message'></textarea>
+                    
 					<input type="password" />
 					<a class="button process red">Encrypt!</a>
 				</div>
@@ -74,7 +77,8 @@
 
 				<div class="content">
 					<h1>Your file is ready!</h1>
-					<a class="button download green">Download</a>
+                    <canvas id='canvas' class='hide'></canvas>
+                    <img id='output' />
 				</div>
 
 			</div>
@@ -83,9 +87,9 @@
 
 	<!-- Include the AES algorithm of the crypto library -->
 	<script src="assets/js/aes.js"></script>
-
+    <script src='assets/js/sjcl.js' type='text/javascript'></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="assets/js/script.js"></script>
+	<script src="assets/js/encrypt-image.js"></script>
 
 	</body>
 

@@ -84,7 +84,7 @@ $(function(){
 
 		var reader = new FileReader();
 
-		if(body.hasClass('encrypt')){
+		if(body.hasClass('encrypt')) {
 
 			// Encrypt the file!
 
