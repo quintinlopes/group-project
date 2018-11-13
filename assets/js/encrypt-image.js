@@ -98,8 +98,6 @@ $(function(){
         ctx.putImageData(imgData, 0, 0);
 
         // view the new image
-        alert('Done! When the image appears, save and share it with someone.');
-        
         output.src = canvas.toDataURL();
         step(4);
 
@@ -191,6 +189,19 @@ $(function(){
             pos++;
         }
     };
+
+    back.click(function(){
+
+		// Reinitialize the hidden file inputs,
+		// so that they don't hold the selection 
+		// from last time
+
+		$('#step2 input[type=file]').replaceWith(function(){
+			return $(this).clone();
+		});
+
+		step(1);
+	});
 
    // Helper function that moves the viewport to the correct step div
 
