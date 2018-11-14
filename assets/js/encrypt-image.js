@@ -6,6 +6,8 @@ $(function(){
     var body = $('body'),
 		stage = $('#stage'),
         back = $('a.back');
+
+    var dPassword = "";
         
     /* Step 1 */
 
@@ -13,6 +15,11 @@ $(function(){
 		body.attr('class', 'encrypt');
 
 		// Go to step 2
+		step(2);
+    });
+
+    $('#step1 .decrypt').click(function(){
+		body.attr('class', 'decrypt');
 		step(2);
     });
     
@@ -49,7 +56,7 @@ $(function(){
                 ctx.canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
 
-                //decode();
+                decode();
             };
             img.src = event.target.result;
         }
@@ -57,6 +64,33 @@ $(function(){
         reader.readAsDataURL(e.target.files[0]);
         step(3);
     });
+
+    // decrypt image
+    $('#step2').on('change', '#decrypt-input', function(e){
+
+		if(e.target.files.length!=1){
+			alert('Please select a file to decrypt!');
+			return false;
+        }
+        
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+            // read the data into the canvas element
+            var img = new Image();
+            img.onload = function() {
+                var ctx = document.getElementById('canvas').getContext('2d');
+                ctx.canvas.width = img.width;
+                ctx.canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                decode();
+            };
+            img.src = event.target.result;
+        }
+
+        reader.readAsDataURL(e.target.files[0]);
+	});
 
     $('a.button.process').click(function(){
 
@@ -72,36 +106,101 @@ $(function(){
         messageInput.val('');
         input.val('');
 
-        // encrypt the message with supplied password if necessary
-        if (password.length > 0) {
-            message = sjcl.encrypt(password, message);
-        } else {
-            message = JSON.stringify({'text': message});
-        }
+        if(body.hasClass('encrypt')) {
+            // encrypt the message with supplied password if necessary
+            if (password.length > 0) {
+                message = sjcl.encrypt(password, message);
+            } else {
+                message = JSON.stringify({'text': message});
+            }
 
-        // exit early if the message is too big for the image
-        var pixelCount = ctx.canvas.width * ctx.canvas.height;
-        if ((message.length + 1) * 16 > pixelCount * 4 * 0.75) {
-            alert('Message is too big for the image.');
-            return;
-        }
-        
-        // exit early if the message is above an artificial limit
-        if (message.length > maxMessageSize) {
-            alert('Message is too big.');
-            return;
-        }
+            // exit early if the message is too big for the image
+            var pixelCount = ctx.canvas.width * ctx.canvas.height;
+            if ((message.length + 1) * 16 > pixelCount * 4 * 0.75) {
+                alert('Message is too big for the image.');
+                return;
+            }
+            
+            // exit early if the message is above an artificial limit
+            if (message.length > maxMessageSize) {
+                alert('Message is too big.');
+                return;
+            }
 
-        // encode the encrypted message with the supplied password
-        var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-        encodeMessage(imgData.data, sjcl.hash.sha256.hash(password), message);
-        ctx.putImageData(imgData, 0, 0);
+            // encode the encrypted message with the supplied password
+            var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+            encodeMessage(imgData.data, sjcl.hash.sha256.hash(password), message);
+            ctx.putImageData(imgData, 0, 0);
 
-        // view the new image
-        output.src = canvas.toDataURL();
-        step(4);
+            // view the new image
+            output.src = canvas.toDataURL();
+            step(4);
+        }
+        else {
+            dPassword = password;
+            decode();
+        }
 
     });
+
+    // decode the image and display the contents if there is anything
+    var decode = function() {
+        var password = dPassword;
+        console.log(password);
+        var passwordFail = 'Password is incorrect or there is nothing here.';
+
+        // decode the message with the supplied password
+        var ctx = document.getElementById('canvas').getContext('2d');
+        var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        var message = decodeMessage(imgData.data, sjcl.hash.sha256.hash(password));
+
+        // try to parse the JSON
+        var obj = null;
+        try {
+            obj = JSON.parse(message);
+        } catch (e) {
+            // display the "choose" view
+            step(3);
+
+            if (password.length > 0) {
+                alert(passwordFail);
+            }
+        }
+
+        // display the "reveal" view
+        if (obj) {
+
+            // decrypt if necessary
+            if (obj.ct) {
+                try {
+                    obj.text = sjcl.decrypt(password, message);
+                } catch (e) {
+                    alert(passwordFail);
+                    
+                }
+                step(3);
+            }
+            step(4);
+
+            // escape special characters
+            var escChars = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                '\'': '&#39;',
+                '/': '&#x2F;',
+                '\n': '<br/>'
+            };
+            var escHtml = function(string) {
+                return String(string).replace(/[&<>"'\/\n]/g, function (c) {
+                    return escChars[c];
+                });
+            };
+            document.getElementById('messageDecoded').innerHTML = escHtml(obj.text);
+        }
+        dPassword = "";
+    };
 
     // returns a 1 or 0 for the bit in 'location'
     var getBit = function(number, location) {
@@ -188,6 +287,36 @@ $(function(){
 
             pos++;
         }
+    };
+
+    
+    // returns the message encoded in the CanvasPixelArray 'colors'
+    var decodeMessage = function(colors, hash) {
+        // this will store the color values we've already read from
+        var history = [];
+
+        // get the message size
+        var messageSize = getNumberFromBits(colors, history, hash);
+
+        // exit early if the message is too big for the image
+        if ((messageSize + 1) * 16 > colors.length * 0.75) {
+            return '';
+        }
+
+        // exit early if the message is above an artificial limit
+        if (messageSize === 0 || messageSize > maxMessageSize) {
+            return '';
+        }
+
+        // put each character into an array
+        var message = [];
+        for (var i = 0; i < messageSize; i++) {
+            var code = getNumberFromBits(colors, history, hash);
+            message.push(String.fromCharCode(code));
+        }
+
+        // the characters should parse into valid JSON
+        return message.join('');
     };
 
     back.click(function(){

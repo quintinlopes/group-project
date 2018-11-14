@@ -64,8 +64,8 @@
 				</div>
 
 				<div class="content if-decrypt">
-					<h1>Enter the pass phrase</h1>
-					<h2>Enter the pass phrase that was used to encrypt this file. It is not possible to decrypt it without it.</h2>
+					<h1>Enter the password</h1>
+					<h2>Enter the password that was used to encrypt this image. It is not possible to decrypt it without it.</h2>
 
 					<input type="password" />
 					<a class="button process red">Decrypt!</a>
@@ -75,10 +75,15 @@
 
 			<div id="step4">
 
-				<div class="content">
+				<div class="content if-encrypt">
 					<h1>Your file is ready!</h1>
                     <canvas id='canvas' class='hide'></canvas>
                     <img id='output' />
+				</div>
+
+				<div class="content if-decrypt">
+					<h1>The message is:</h1>
+					<div id='messageDecoded' class='sectionbody'></div>
 				</div>
 
 			</div>

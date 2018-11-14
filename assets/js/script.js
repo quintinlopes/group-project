@@ -65,7 +65,6 @@ $(document).ready(function(){
 
 	/* Step 3 */
 
-
 	$('a.button.process').click(function(){
 
 		var input = $(this).parent().find('input[type=password]'),
