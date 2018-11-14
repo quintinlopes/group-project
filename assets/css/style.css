@@ -202,25 +202,26 @@ body.decrypt .if-decrypt{
 
 
 #step1{
-	background-image: url("../../../group-project/assets/img/darkness.png");
-}
-
-body.encrypt #step2{
-	background-image: url("../../../group-project/assets/img/pink-dust.png");
-}
-
-body.decrypt #step2{
 	background-image: url("../../../group-project/assets/img/footer_lodyas.png");
 }
 
+body.encrypt #step2{
+	background-image: url("../../../group-project/assets/img/folk-pattern-black.png");
+}
+
+body.decrypt #step2{
+	background-image: url("../../../group-project/assets/img/folk-pattern-black.png");
+}
+
 #step3{
-	background-image: url("../../../group-project/assets/img/congruent_outline.png");
+	background-image: url("../../../group-project/assets/img/darkness.png");
+
 }
 
 #step3 input[type=password]{
 	background-color: #fff;
 	border: none;
-	padding: 8px 18px;
+	padding: 18px 18px;
 	line-height: 1;
 	font: inherit;
 	display: inline-block;
@@ -231,6 +232,10 @@ body.decrypt #step2{
 	box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
 	font-size: 36px;
 	color: #555;
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+	
 }
 
 #step3 textarea{
@@ -247,6 +252,11 @@ body.decrypt #step2{
 	box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
 	font-size: 36px;
 	color: #555;
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+
+	
 }
 
 
@@ -258,7 +268,7 @@ body.decrypt #step2{
 }
 
 #step4{
-	background-image: url("../../../group-project/assets/img/ep_naturalblack.png");
+	background-image: url("../../../group-project/assets/img/footer_lodyas.png");
 }
 
 #step1 .content{	margin-top: -140px;}
@@ -326,17 +336,4 @@ body.decrypt #step2{
 
 #encrypt-pic:hover {
 	color: #000000;
-}
-
-/*-------------------------	Back Btn --------------------------*/
-
-#landingBtn {
-	background-color: grey;
-	color: black;
-	text-align: center;
-	width: 200px;
-}
-
-#landingBtn:hover {
-	color: white;
 }
