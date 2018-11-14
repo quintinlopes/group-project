@@ -327,3 +327,16 @@ body.decrypt #step2{
 #encrypt-pic:hover {
 	color: #000000;
 }
+
+/*-------------------------	Back Btn --------------------------*/
+
+#landingBtn {
+	background-color: grey;
+	color: black;
+	text-align: center;
+	width: 200px;
+}
+
+#landingBtn:hover {
+	color: white;
+}
