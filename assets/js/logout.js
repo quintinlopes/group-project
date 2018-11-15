@@ -1,6 +1,6 @@
 var mainApp = {};
 (function(){
-var mainContainer = document.getElementById("main_container");
+var mainContainer = document.getElementById("main-block-o-block");
 
     var logtout =  function(){
         firebase.auth().signOut().then(function(){
